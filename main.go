@@ -41,6 +41,7 @@ func createQR(data string) ([]byte, error) {
 type qrserver struct{}
 
 func (s *qrserver) handleGET(w http.ResponseWriter, r *http.Request) {
+	prefix := os.Getenv("WEBQRCODE_PREFIX")
 
 	fmt.Fprintf(w, `
 <!DOCTYPE html>
@@ -49,13 +50,13 @@ func (s *qrserver) handleGET(w http.ResponseWriter, r *http.Request) {
 <meta charset="utf-8">
 </head>
 <body>
- <form action="/qr" method="post">
+ <form action="%s/qr" method="post">
   <label for="data">Data</label><br>
   <input type="text" id="data" name="data"><br>
   <input type="submit" value="Submit">
 </form> 
 </body>
-`)
+`, prefix)
 }
 
 func (s *qrserver) handlePOST(w http.ResponseWriter, r *http.Request) {
@@ -73,9 +74,16 @@ func (s *qrserver) handlePOST(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *qrserver) serve(listen string) error {
+	prefix := os.Getenv("WEBQRCODE_PREFIX")
+
 	r := mux.NewRouter()
+	if prefix != "" {
+		r = r.PathPrefix(prefix).Subrouter()
+	}
+
 	r.HandleFunc("/", s.handleGET)
 	r.HandleFunc("/qr", s.handlePOST)
+
 	srv := &http.Server{
 		Addr:         listen,
 		WriteTimeout: time.Second * 15,
@@ -92,7 +100,7 @@ func (s *qrserver) serve(listen string) error {
 
 func main() {
 	s := qrserver{}
-	if err := s.serve("localhost:8888"); err != nil {
+	if err := s.serve(os.Getenv("WEBQRCODE_LISTEN")); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
