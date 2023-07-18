@@ -12,7 +12,7 @@
           go gopls gotools
         ];
       };
-      defaultPackage.x86_64-linux =
+      packages.x86_64-linux.default =
       pkgs.buildGoModule {
         pname = "webqrcode";
         src = self;
