@@ -27,9 +27,11 @@ func createQR(data string) ([]byte, error) {
 		return nil, err
 	}
 
-	var buf bytes.Buffer
-	options := standard.WithBuiltinImageEncoder(standard.PNG_FORMAT)
-	w := standard.NewWithWriter(&nopCloser{&buf}, options)
+	var (
+		buf     bytes.Buffer
+		options = standard.WithBuiltinImageEncoder(standard.PNG_FORMAT)
+		w       = standard.NewWithWriter(&nopCloser{&buf}, options)
+	)
 
 	if err := qrc.Save(w); err != nil {
 		return nil, err
