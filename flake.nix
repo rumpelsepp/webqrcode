@@ -18,7 +18,7 @@
         src = self;
         version = self.lastModifiedDate;
         buildInputs = [pkgs.go];
-        vendorHash = "sha256-rUQ/iXG/lnvi01NXBOsu3CoG3YrYUFwPZDadTFThH3g=";
+        vendorHash = "sha256-6UyljuhLPfCCkYSLmHp40ltDMAHnD5ZYU7CXSfYH6CQ=";
       };
       formatter.x86_64-linux = pkgs.nixpkgs-fmt;
     };
